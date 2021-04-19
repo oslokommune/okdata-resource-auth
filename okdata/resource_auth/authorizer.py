@@ -5,10 +5,14 @@ import requests
 
 
 class ResourceAuthorizer:
-    def __init__(self):
-        self.keycloak_server_url = os.environ["KEYCLOAK_SERVER"]
-        self.keycloak_realm = os.environ["KEYCLOAK_REALM"]
-        self.resource_server_name = os.environ["RESOURCE_SERVER_CLIENT_ID"]
+    def __init__(
+        self, keycloak_server_url=None, keycloak_realm=None, resource_server_name=None
+    ):
+        self.keycloak_server_url = keycloak_server_url or os.environ["KEYCLOAK_SERVER"]
+        self.keycloak_realm = keycloak_realm or os.environ["KEYCLOAK_REALM"]
+        self.resource_server_name = (
+            resource_server_name or os.environ["RESOURCE_SERVER_CLIENT_ID"]
+        )
 
     def has_access(self, bearer_token, scope, resource_name=None):
         payload = [
