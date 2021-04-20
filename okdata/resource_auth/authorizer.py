@@ -14,7 +14,7 @@ class ResourceAuthorizer:
             resource_server_name or os.environ["RESOURCE_SERVER_CLIENT_ID"]
         )
 
-    def has_access(self, bearer_token, scope, resource_name=None):
+    def has_access(self, bearer_token, scope, resource_name=None, use_whitelist=False):
         payload = [
             ("grant_type", "urn:ietf:params:oauth:grant-type:uma-ticket"),
             ("audience", self.resource_server_name),
@@ -35,9 +35,17 @@ class ResourceAuthorizer:
             headers=headers,
         )
 
-        if response.status_code == 403:
-            return False
+        has_access = False
+        if response.status_code == 200:
+            has_access = response.json()["result"]
+        elif response.status_code == 403:
+            pass
+        else:
+            response.raise_for_status()
 
-        response.raise_for_status()
+        if not has_access and use_whitelist:
+            return self.has_access(
+                bearer_token, scope="okdata:dataset:whitelist", use_whitelist=False
+            )
 
-        return response.json()["result"]
+        return has_access
