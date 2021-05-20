@@ -1,7 +1,9 @@
 import os
 import urllib.parse
 
-import requests
+from requests import Session
+from requests.adapters import HTTPAdapter
+from requests.packages.urllib3.util.retry import Retry
 
 
 class ResourceAuthorizer:
@@ -26,7 +28,12 @@ class ResourceAuthorizer:
             "Content-Type": "application/x-www-form-urlencoded",
         }
 
-        response = requests.post(
+        session = Session()
+        adapter = HTTPAdapter(max_retries=Retry(total=3, backoff_factor=0.5))
+        session.mount("https://", adapter)
+        session.mount("http://", adapter)
+
+        response = session.post(
             url=urllib.parse.urljoin(
                 self.keycloak_server_url,
                 f"/auth/realms/{self.keycloak_realm}/protocol/openid-connect/token",
