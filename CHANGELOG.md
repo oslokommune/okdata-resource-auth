@@ -1,4 +1,4 @@
-## ?.?.?
+## 0.1.1
 
 * Enabled retry backoff factor for requests to Keycloak.
 
