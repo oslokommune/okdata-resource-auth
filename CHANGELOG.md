@@ -1,4 +1,4 @@
-## ?.?.?
+## 0.1.2
 
 * Set timeout for requests to Keycloak
 
