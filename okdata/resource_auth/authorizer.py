@@ -15,6 +15,9 @@ class ResourceAuthorizer:
         self.resource_server_name = (
             resource_server_name or os.environ["RESOURCE_SERVER_CLIENT_ID"]
         )
+        self.keycloak_timeout = (
+            int(os.environ.get("KEYCLOAK_TIMEOUT_MS", 2000)) / 1000.0
+        )
 
     def has_access(self, bearer_token, scope, resource_name=None, use_whitelist=False):
         payload = [
@@ -40,6 +43,7 @@ class ResourceAuthorizer:
             ),
             data=payload,
             headers=headers,
+            timeout=self.keycloak_timeout,
         )
 
         has_access = False
