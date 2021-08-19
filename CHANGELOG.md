@@ -1,3 +1,7 @@
+## ?.?.?
+
+* Fix retry on POST requests to Keycloak
+
 ## 0.1.2
 
 * Set timeout for requests to Keycloak
