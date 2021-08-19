@@ -32,7 +32,8 @@ class ResourceAuthorizer:
         }
 
         session = Session()
-        adapter = HTTPAdapter(max_retries=Retry(total=3, backoff_factor=0.5))
+        retry = Retry(total=3, backoff_factor=0.5, allowed_methods=None)
+        adapter = HTTPAdapter(max_retries=retry)
         session.mount("https://", adapter)
         session.mount("http://", adapter)
 
