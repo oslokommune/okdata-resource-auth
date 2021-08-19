@@ -1,4 +1,4 @@
-## ?.?.?
+## 0.1.3
 
 * Fix retry on POST requests to Keycloak
 
