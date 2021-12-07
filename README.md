@@ -1,7 +1,7 @@
 # okdata-resource-auth
 
-Helpers for authorizing users against Keycloak resources for [Origo
-Dataplattform](https://oslokommune.github.io/dataplattform/).
+
+Client library for authorizing logged-in users against Keycloak resources and scopes.
 
 ## Setup
 
