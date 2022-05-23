@@ -1,7 +1,6 @@
 from urllib import parse
 
 import pytest
-from requests import HTTPError
 from requests_mock.response import create_response
 
 from okdata.resource_auth import ResourceAuthorizer
@@ -28,6 +27,10 @@ def keycloak_mock(requests_mock):
 
         access_token = request.headers["Authorization"].split("Bearer ")[1]
         permission = dict(parse.parse_qsl(request.body))["permission"]
+        resource = permission.split("#")[0]
+
+        if resource and resource != resource_name:
+            return create_response(request, status_code=400)
 
         if (access_token == token_not_authorized) or (
             access_token == token_whitelisted and permission == permission_resource_read
@@ -60,11 +63,16 @@ def test_has_access_not_authorized(keycloak_mock):
 
 
 def test_has_access_invalid_token(keycloak_mock):
-    with pytest.raises(HTTPError):
-        resource_authorizer.has_access(token_invalid, scope, resource_name)
+    assert not resource_authorizer.has_access(token_invalid, scope, resource_name)
 
 
 def test_has_access_whitelisted(keycloak_mock):
     assert resource_authorizer.has_access(
         token_whitelisted, scope, resource_name, use_whitelist=True
+    )
+
+
+def test_resource_not_found(keycloak_mock):
+    assert not resource_authorizer.has_access(
+        token_authorized, scope, "okdata:dataset:nil"
     )

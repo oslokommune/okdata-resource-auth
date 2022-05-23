@@ -50,7 +50,7 @@ class ResourceAuthorizer:
         has_access = False
         if response.status_code == 200:
             has_access = response.json()["result"]
-        elif response.status_code == 403:
+        elif 400 <= response.status_code < 500:
             pass
         else:
             response.raise_for_status()
